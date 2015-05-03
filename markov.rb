@@ -1,6 +1,7 @@
 # coding: utf-8
 
-require 'igo-ruby'
+# require 'igo-ruby'
+require 'natto'
 require 'nkf'
 require 'open-uri'
 require 'json'
@@ -19,7 +20,8 @@ def normalize_tweet(tweet)
 end
 
 def create_markov_table(tweets)
-  tagger = Igo::Tagger.new('./ipadic')
+  tagger = Natto::MeCab.new
+  # tagger = Igo::Tagger.new('./ipadic')
 
   # 3階のマルコフ連鎖
   markov_table = Array.new
@@ -27,9 +29,14 @@ def create_markov_table(tweets)
 
   # 形態素3つずつから成るテーブルを生成
   tweets.each do |tweet|
+    tmp = []
+    natto = Natto::MeCab.new
+    natto.parse(tweet) do |n|
+      tmp.push(n.surface)
+    end
     wakati_array = Array.new
     wakati_array << BEGIN_FLG
-    wakati_array += tagger.wakati(tweet)
+    wakati_array += tmp
     wakati_array << END_FLG
 
     # 要素は最低4つあれば[BEGIN]で始まるものと[END]で終わるものの2つが作れる　
