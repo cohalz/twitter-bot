@@ -10,8 +10,8 @@
 
 1. Download tweet history from your Twitter setting page
   - The program will use *text* column of **tweets.csv**
-2. Install natto
-  - ```gem install natto```
+2. Install twitter and natto
+  - ```gem install twitter natto```
 3. Generate/Post tweet
   - Just generate: `ruby main.rb`
   - Post: write API keys in **config.rb**, and `ruby main.rb production`

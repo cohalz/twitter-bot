@@ -41,6 +41,7 @@ class ReplyDaemon
     begin
       @stream.filter(:track => BOT_SCREEN_NAME) do |object|
         if object.is_a?(Twitter::Tweet) && object.text.include?('@'+BOT_SCREEN_NAME)
+          sleep(7)
           reply = '@' + object.user.screen_name + ' ' + generate_tweet(@markov_table)
           @rest.update(reply, { 'in_reply_to_status_id' => object.id })
         end
