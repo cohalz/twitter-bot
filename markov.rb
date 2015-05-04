@@ -12,7 +12,7 @@ END_FLG = '[END]'
 def normalize_tweet(tweet)
   tweet = tweet.to_s # 数字だけのツイートでunpack('U*')がエラーを吐くので全てtoString
   return nil if NKF.guess(tweet) != NKF::UTF8
-  tweet.gsub!(/\.?\s*@[0-9A-Za-z_]+/, '')  # リプライをすべて削除
+  tweet.gsub!(/\.?@[0-9A-Za-z_]+/, '')  # リプライをすべて削除
   # tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
   tweet.gsub!(/RT:/, '')  # RT削除
   tweet.gsub!(/.*I'm\sat.*/, '')  # 4sq削除
