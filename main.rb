@@ -1,8 +1,9 @@
 # coding: utf-8
-
+Encoding.default_external = "UTF-8"
 require 'twitter'
 require 'csv'
 require_relative 'markov'
+require_relative 'config'
 
 tweets_table = Array.new
 CSV.foreach('data/tweets/tweets.csv', :headers => true) do |row|
@@ -15,12 +16,12 @@ markov_table = create_markov_table(tweets_table)
 
 if ARGV[0] == 'production'
   rest = Twitter::REST::Client.new do |config|
-    config.consumer_key = ""
-    config.consumer_secret = ""
-    config.access_token = ""
-    config.access_token_secret = ""
+    config.consumer_key = YOUR_CONSUMER_KEY
+    config.consumer_secret = YOUR_CONSUMER_SECRET
+    config.access_token = YOUR_OAUTH_TOKEN
+    config.access_token_secret = YOUR_OAUTH_TOKEN_SECRET
   end
-  rest.update(generate_tweet(markov_table))
-else
-  puts "[tweet] #{generate_tweet(markov_table)}"
+  tweet = generate_tweet(markov_table)
+  rest.update(tweet)
 end
+puts "[tweet] #{tweet}"
