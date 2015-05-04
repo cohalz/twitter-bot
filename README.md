@@ -10,12 +10,12 @@
 
 1. Download tweet history from your Twitter setting page
 	- The folder must be placed under **data/**
-	- The program will use *text* column of **data/tweets/tweets.csv**
-2. Install [igo-ruby](https://github.com/kyow/igo-ruby) (Japanese morphological analysis library)
-	- Dictionary's directory: **ipadic/**
+	- The program will use *text* column of **tweets.csv**
+2. Install natto
+  - ```gem install natto```
 3. Generate/Post tweet
 	- Just generate: `ruby main.rb`
-	- Post: write API keys in **main.rb**, and `ruby main.rb production`
+	- Post: write API keys in **config.rb**, and `ruby main.rb production`
 
 ## Reply
 

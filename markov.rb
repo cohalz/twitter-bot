@@ -13,14 +13,18 @@ def normalize_tweet(tweet)
   tweet = tweet.to_s # 数字だけのツイートでunpack('U*')がエラーを吐くので全てtoString
   return nil if NKF.guess(tweet) != NKF::UTF8
   tweet.gsub!(/\.?\s*@[0-9A-Za-z_]+/, '')  # リプライをすべて削除
-  tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
+  # tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
+  tweet.gsub!(/RT:/, '')  # RT削除
+  tweet.gsub!(/.*I'm\sat.*/, '')  # 4sqツイ削除
   tweet.gsub!(/http:\/\/\S+/, '')  # URLを削除 スペースが入るまで消える
-  tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
+  # tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
   tweet
 end
 
 def create_markov_table(tweets)
-  tagger = Natto::MeCab.new
+  natto = Natto::MeCab.new
+  sysdic = natto.dicts.first
+  sysdic.filepath = './ipadic/sys.dic'
   # tagger = Igo::Tagger.new('./ipadic')
 
   # 3階のマルコフ連鎖
@@ -30,9 +34,11 @@ def create_markov_table(tweets)
   # 形態素3つずつから成るテーブルを生成
   tweets.each do |tweet|
     tmp = []
-    natto = Natto::MeCab.new
-    natto.parse(tweet) do |n|
-      tmp.push(n.surface)
+    nomt = normalize_tweet(tweet)
+    if nomt != nil
+      natto.parse(nomt) do |n|
+        tmp.push(n.surface)
+      end
     end
     wakati_array = Array.new
     wakati_array << BEGIN_FLG
@@ -92,6 +98,7 @@ def generate_tweet(markov_table)
       break
     end
   end
+  markov_tweet.gsub!(/#/, ' #') #ハッシュタグ化
   markov_tweet
 end
 
