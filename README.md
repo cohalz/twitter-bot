@@ -9,13 +9,12 @@
 ## How to use
 
 1. Download tweet history from your Twitter setting page
-	- The folder must be placed under **data/**
-	- The program will use *text* column of **tweets.csv**
+  - The program will use *text* column of **tweets.csv**
 2. Install natto
   - ```gem install natto```
 3. Generate/Post tweet
-	- Just generate: `ruby main.rb`
-	- Post: write API keys in **config.rb**, and `ruby main.rb production`
+  - Just generate: `ruby main.rb`
+  - Post: write API keys in **config.rb**, and `ruby main.rb production`
 
 ## Reply
 
@@ -23,10 +22,10 @@
 
 - **reply.rb** can answer to replies found on your timeline
 - Daemon
-	- Run: `ruby reply.rb`
-	- Stop: `cat reply_daemon.pid | xargs kill`
-	- A file **reply_daemon.pid** will be generated automatically
-	- Reference: [http://nuke.hateblo.jp/entry/2013/07/04/090917](http://nuke.hateblo.jp/entry/2013/07/04/090917)
+  - Run: `ruby reply.rb`
+  - Stop: `cat reply_daemon.pid | xargs kill`
+  - A file **reply_daemon.pid** will be generated automatically
+  - Reference: [http://nuke.hateblo.jp/entry/2013/07/04/090917](http://nuke.hateblo.jp/entry/2013/07/04/090917)
 
 ## Additional feature
 
