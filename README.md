@@ -12,8 +12,8 @@
   - The program will use *text* column of **tweets.csv**
 1. Install MeCab
   - good: [mecab-ipadic-neologd](https://github.com/neologd/mecab-ipadic-neologd)
-1. Install twitter and natto
-  - ```gem install twitter natto```
+1. Install twitter, tweetstream and natto
+  - ```gem install twitter tweetstream natto```
 1. Generate/Post tweet
   - Just generate: `ruby main.rb`
   - Post: write API keys in **config.rb**, and `ruby main.rb production`

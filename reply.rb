@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'twitter'
+require 'tweetstream'
 require 'csv'
 require_relative 'markov'
 require_relative 'config'
@@ -15,12 +16,13 @@ class ReplyDaemon
       config.access_token = YOUR_OAUTH_TOKEN
       config.access_token_secret = YOUR_OAUTH_TOKEN_SECRET
     end
-    @stream = Twitter::Streaming::Client.new do |config|
+    TweetStream.configure do |config|
       config.consumer_key = YOUR_CONSUMER_KEY
       config.consumer_secret = YOUR_CONSUMER_SECRET
-      config.access_token = YOUR_OAUTH_TOKEN
-      config.access_token_secret = YOUR_OAUTH_TOKEN_SECRET
+      config.oauth_token = YOUR_OAUTH_TOKEN
+      config.oauth_token_secret = YOUR_OAUTH_TOKEN_SECRET
     end
+    @stream = TweetStream::Client.new
 
     tweets_table = Array.new
     CSV.foreach('tweets.csv', :headers => true) do |row|
@@ -39,7 +41,7 @@ class ReplyDaemon
   def run
     daemonize
     begin
-      @stream.filter(:track => BOT_SCREEN_NAME) do |object|
+      @stream.userstream do |object|
         if object.is_a?(Twitter::Tweet) && object.text.include?('@'+BOT_SCREEN_NAME)
           sleep(3)
           reply = '@' + object.user.screen_name + ' ' + generate_tweet(@markov_table)
