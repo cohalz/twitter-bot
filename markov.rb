@@ -98,12 +98,7 @@ def generate_tweet(markov_table)
   end
   markov_tweet.gsub!(/RT:?/, '')
   markov_tweet.gsub!(/#/, ' #')
-  markov_tweet.gsub!(/」/, '')
-  markov_tweet.gsub!(/「/, '')
-  markov_tweet.gsub!(/\(/, '')
-  markov_tweet.gsub!(/\)/, '')
-  markov_tweet.gsub!(/）/, '')
-  markov_tweet.gsub!(/（/, '')
+  markov_tweet.gsub!(/[「」（）\(\)]/, '')
   markov_tweet
 end
 
