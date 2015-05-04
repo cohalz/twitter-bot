@@ -23,7 +23,7 @@ class ReplyDaemon
     end
 
     tweets_table = Array.new
-    CSV.foreach('./tweets.csv', :headers => true) do |row|
+    CSV.foreach('tweets.csv', :headers => true) do |row|
       tweet = normalize_tweet(row['text'])
       next if !tweet
       tweets_table << tweet
