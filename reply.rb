@@ -42,7 +42,7 @@ class ReplyDaemon
     daemonize
     begin
       @stream.userstream do |object|
-        if object.is_a?(Twitter::Tweet) && object.text.include?('@'+BOT_SCREEN_NAME)
+        if object.is_a?(Twitter::Tweet) && object.text.include?('@'+BOT_SCREEN_NAME) && !(object.text.include?('RT'))
           sleep(3)
           reply = '@' + object.user.screen_name + ' ' + generate_tweet(@markov_table)
           @rest.update(reply, { 'in_reply_to_status_id' => object.id })
@@ -71,3 +71,4 @@ class ReplyDaemon
 end
 
 ReplyDaemon.new.run
+
