@@ -15,7 +15,7 @@ def normalize_tweet(tweet)
   tweet.gsub!(/\.?\s*@[0-9A-Za-z_]+/, '')  # リプライをすべて削除
   # tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
   tweet.gsub!(/RT:/, '')  # RT削除
-  tweet.gsub!(/.*I'm\sat.*/, '')  # 4sqツイ削除
+  tweet.gsub!(/.*I'm\sat.*/, '')  # 4sq削除
   tweet.gsub!(/http:\/\/\S+/, '')  # URLを削除 スペースが入るまで消える
   # tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
   tweet
@@ -23,8 +23,6 @@ end
 
 def create_markov_table(tweets)
   natto = Natto::MeCab.new
-  sysdic = natto.dicts.first
-  sysdic.filepath = './ipadic/sys.dic'
   # tagger = Igo::Tagger.new('./ipadic')
 
   # 3階のマルコフ連鎖
@@ -98,7 +96,7 @@ def generate_tweet(markov_table)
       break
     end
   end
-  markov_tweet.gsub!(/#/, ' #') #ハッシュタグ化
+  markov_tweet.gsub!(/#/, ' #')
   markov_tweet
 end
 
