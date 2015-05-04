@@ -44,6 +44,11 @@ class ReplyDaemon
           reply = '@' + object.user.screen_name + ' ' + generate_tweet(@markov_table)
           @rest.update(reply, { 'in_reply_to_status_id' => object.id })
         end
+        if object.is_a?(Twitter::Tweet)
+          CSV.open("streamlog.csv", "a") do |csv|
+            csv << ["", "", "", "", "", object.text,"","","",""]
+          end
+        end
       end
     rescue => ex
       open(@error_log_path, 'w') { |f| 
