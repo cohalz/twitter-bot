@@ -34,9 +34,8 @@ def create_markov_table(tweets)
   # 形態素3つずつから成るテーブルを生成
   tweets.each do |tweet|
     tmp = []
-    nomt = normalize_tweet(tweet)
-    if nomt != nil
-      natto.parse(nomt) do |n|
+    if tweet != nil
+      natto.parse(tweet) do |n|
         tmp.push(n.surface)
       end
     end
@@ -86,6 +85,7 @@ def generate_tweet(markov_table)
         markov_tweet += selected[1] + selected[2]
       end
     end
+    markov_tweet = normalize_tweet(markov_tweet)
     # If generated tweet size is greater than 100, tweet random Kaomoji
     if markov_tweet.size > 100
       begin
