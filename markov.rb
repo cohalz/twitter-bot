@@ -19,6 +19,7 @@ def normalize_tweet(tweet)
   tweet.gsub!(/https?:[\w\/\.]+/, '')  # URLを削除
   tweet.gsub!(/#/, ' #') #ハッシュタグ化
   tweet.gsub!(/[「」【】『』）\(\)]/, '') #括弧削除
+  tweet.gsub!(/#.*[Mm]atsuri/, '') #検索妨害になるため削除
   # tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
   tweet
 end
