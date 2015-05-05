@@ -20,8 +20,6 @@
 
 ## Reply
 
-***This feature is still-under-construction***
-
 - **reply.rb** can answer to replies found on your timeline
 - Daemon
   - Run: `ruby reply.rb`
