@@ -16,7 +16,7 @@ def normalize_tweet(tweet)
   # tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
   tweet.gsub!(/RT/, '')  # RT削除
   tweet.gsub!(/.*I'm\sat.*/, '')  # 4sq削除
-  tweet.gsub!(/https?:\/\/\w+/, '')  # URLを削除
+  tweet.gsub!(/https?:[\w\/\.]+/, '')  # URLを削除
   tweet.gsub!(/#/, ' #') #ハッシュタグ化
   tweet.gsub!(/[「」【】『』）\(\)]/, '') #括弧削除
   # tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
