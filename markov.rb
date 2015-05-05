@@ -12,11 +12,12 @@ END_FLG = '[END]'
 def normalize_tweet(tweet)
   tweet = tweet.to_s # 数字だけのツイートでunpack('U*')がエラーを吐くので全てtoString
   return nil if NKF.guess(tweet) != NKF::UTF8
-  tweet.gsub!(/\.?@[0-9A-Za-z_]+/, '')  # リプライをすべて削除
+  tweet.gsub!(/\.?@[0-9A-Za-z_:]+/, '')  # リプライをすべて削除
   # tweet.gsub!(/(RT|QT)\s*@?[0-9A-Za-z_]+.*$/, '')  # RT/QT以降行末まで削除
-  tweet.gsub!(/RT:?/, '')  # RT削除
+  tweet.gsub!(/RT/, '')  # RT削除
   tweet.gsub!(/.*I'm\sat.*/, '')  # 4sq削除
-  tweet.gsub!(/http:\/\/\S+/, '')  # URLを削除 スペースが入るまで消える
+  tweet.gsub!(/http:\/\/\w+/, '')  # URLを削除
+  tweet.gsub!(/t\.co/, '')  # URLを削除 スペースが入るまで消える
   tweet.gsub!(/#/, ' #') #ハッシュタグ化
   tweet.gsub!(/[「」【】『』）\(\)]/, '') #括弧削除
   # tweet.gsub!(/#[0-9A-Za-z_]+/, '')  # ハッシュタグを削除
@@ -34,8 +35,9 @@ def create_markov_table(tweets)
   # 形態素3つずつから成るテーブルを生成
   tweets.each do |tweet|
     tmp = []
-    if tweet != nil
-      natto.parse(tweet) do |n|
+    nomtwi = normalize_tweet(tweet)
+    if nomtwi != nil
+      natto.parse(nomtwi) do |n|
         tmp.push(n.surface)
       end
     end
