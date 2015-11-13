@@ -6,8 +6,7 @@ require 'nkf'
 require 'open-uri'
 require 'json'
 
-BEGIN_FLG = '[BEGIN]'
-END_FLG = '[END]'
+require_relative 'tweet'
 
 def normalize_tweet(tweet)
   tweet = tweet.to_s # 数字だけのツイートでunpack('U*')がエラーを吐くので全てtoString
@@ -29,9 +28,7 @@ def create_markov_table(tweets)
   natto = Natto::MeCab.new
   # tagger = Igo::Tagger.new('./ipadic')
 
-  # 3階のマルコフ連鎖
-  markov_table = Array.new
-  markov_index = 0
+    tagger = Igo::Tagger.new('./ipadic')
 
   # 形態素3つずつから成るテーブルを生成
   tweets.each do |tweet|
@@ -47,45 +44,49 @@ def create_markov_table(tweets)
     wakati_array += tmp
     wakati_array << END_FLG
 
-    # 要素は最低4つあれば[BEGIN]で始まるものと[END]で終わるものの2つが作れる　
-    next if wakati_array.size < 4
-    i = 0
-    loop do
-      markov_table[markov_index] = wakati_array[i..(i+2)]
-      markov_index += 1
-      break if wakati_array[i+2] == END_FLG
-      i += 1
-    end
-  end
-  markov_table
-end
+    # 形態素3つずつから成るテーブルを生成
+    tweets.each do |tweet|
+      wakati_array = tweet.wakati(tagger)
 
-def generate_tweet(markov_table)
-  while true
-    # 先頭（[BEGIN]から始まるもの）を選択
-    selected_array = Array.new
-    markov_table.each do |markov_array|
-      if markov_array[0] == BEGIN_FLG
-        selected_array << markov_array
+      # 要素は最低4つあれば[BEGIN]で始まるものと[END]で終わるものの2つが作れる　
+      next if wakati_array.size < 4
+      i = 0
+      loop do
+        @markov_table[markov_index] = wakati_array[i..(i+2)]
+        markov_index += 1
+        break if wakati_array[i+2] == END_FLG
+        i += 1
       end
     end
-    selected = selected_array.sample
-    markov_tweet = selected[1] + selected[2]
-    # 以後、[END]で終わるものを拾うまで連鎖を続ける
-    loop do
+  end
+
+  def generate
+    while true
+      # 先頭（[BEGIN]から始まるもの）を選択
       selected_array = Array.new
-      markov_table.each do |markov_array|
-        if markov_array[0] == selected[2]
+      @markov_table.each do |markov_array|
+        if markov_array[0] == BEGIN_FLG
           selected_array << markov_array
         end
       end
-      break if selected_array.size == 0 # 連鎖できなければ諦める
       selected = selected_array.sample
-      if selected[2] == END_FLG
-        markov_tweet += selected[1]
-        break
-      else
-        markov_tweet += selected[1] + selected[2]
+      markov_tweet = selected[1] + selected[2]
+      # 以後、[END]で終わるものを拾うまで連鎖を続ける
+      loop do
+        selected_array = Array.new
+        @markov_table.each do |markov_array|
+          if markov_array[0] == selected[2]
+            selected_array << markov_array
+          end
+        end
+        break if selected_array.size == 0 # 連鎖できなければ諦める
+        selected = selected_array.sample
+        if selected[2] == END_FLG
+          markov_tweet += selected[1]
+          break
+        else
+          markov_tweet += selected[1] + selected[2]
+        end
       end
     end
     markov_tweet = normalize_tweet(markov_tweet)
@@ -94,18 +95,14 @@ def generate_tweet(markov_table)
       begin
         markov_tweet = get_kaomoji
         break
-      rescue
-        next
       end
-    else
-      break
     end
+    markov_tweet
   end
-  markov_tweet
-end
 
-def get_kaomoji
-  open('http://kaomoji.n-at.me/random.json') do |f|
-    JSON.load(f)['record']['text']
+  def get_kaomoji
+    open('http://kaomoji.n-at.me/random.json') do |f|
+      JSON.load(f)['record']['text']
+    end
   end
 end

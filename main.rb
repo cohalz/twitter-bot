@@ -2,6 +2,8 @@
 Encoding.default_external = "UTF-8"
 require 'twitter'
 require 'csv'
+
+require_relative 'tweet'
 require_relative 'markov'
 require_relative 'config'
 
@@ -12,7 +14,8 @@ CSV.foreach('./tweets.csv', :headers => true) do |row|
   tweets_table << tweet
 end
 
-markov_table = create_markov_table(tweets_table)
+# create markov table which has all 3-grams based on the tweets table
+markov = Markov.new(tweets)
 
 str = generate_tweet(markov_table)
 if ARGV[0] == 'production'
